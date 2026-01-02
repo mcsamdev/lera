@@ -55,6 +55,12 @@ pub trait Float:
     fn atanh(self) -> Self;
     fn to_degrees(self) -> Self;
     fn to_radians(self) -> Self;
+
+    // Methods for special value checking
+    fn is_nan(self) -> bool;
+    fn is_infinite(self) -> bool;
+    fn is_finite(self) -> bool;
+
     const EPSILON: Self;
     const MIN: Self;
     const MIN_POSITIVE: Self;
@@ -210,6 +216,17 @@ impl Float for f32 {
     fn to_radians(self) -> Self {
         self.to_radians()
     }
+
+    fn is_nan(self) -> bool {
+        self.is_nan()
+    }
+    fn is_infinite(self) -> bool {
+        self.is_infinite()
+    }
+    fn is_finite(self) -> bool {
+        self.is_finite()
+    }
+
     const EPSILON: Self = f32::EPSILON;
     const MIN: Self = f32::MIN;
     const MIN_POSITIVE: Self = f32::MIN_POSITIVE;
@@ -362,6 +379,17 @@ impl Float for f64 {
     fn to_radians(self) -> Self {
         self.to_radians()
     }
+
+    fn is_nan(self) -> bool {
+        self.is_nan()
+    }
+    fn is_infinite(self) -> bool {
+        self.is_infinite()
+    }
+    fn is_finite(self) -> bool {
+        self.is_finite()
+    }
+
     const EPSILON: Self = f64::EPSILON;
     const MIN: Self = f64::MIN;
     const MIN_POSITIVE: Self = f64::MIN_POSITIVE;
