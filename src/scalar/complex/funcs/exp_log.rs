@@ -41,7 +41,16 @@ impl<T: Float> Complex<T> {
     /// directly due to catastrophic cancellation.
     #[inline]
     pub fn exp_m1(self) -> Self {
-        self.exp() - T::one()
+        let ea_m1 = self.real.exp_m1();
+        let ea = ea_m1 + T::ONE;
+
+        let sb = self.imaginary.sin();
+
+        let sh = (T::ONE_HALF * self.imaginary).sin();
+        let cb_m1 = (T::zero() - T::ONE - T::ONE) * sh * sh;
+        let re = ea.mul_add(cb_m1, ea_m1);
+        let im = ea * sb;
+        Self::new(re, im)
     }
 
     /// Computes the principal value of the complex natural logarithm.
@@ -69,9 +78,19 @@ impl<T: Float> Complex<T> {
     /// ```
     #[inline]
     pub fn ln(self) -> Self {
-        let r = self.real.hypot(self.imaginary);
-        let theta = self.arg();
-        Self::new(r.ln(), theta)
+        let ar = self.real.abs();
+        let ai = self.imaginary.abs();
+
+        let (mx, mn) = if ar >= ai { (ar, ai) } else { (ai, ar) };
+        let re = if mx == T::ZERO {
+            // Match float semantics
+            mx.ln()
+        } else {
+            let t = mn / mx;
+            mx.ln() + (T::ONE_HALF) * (t * t).ln_1p()
+        };
+        let im = self.imaginary.atan2(self.real);
+        Self::new(re, im)
     }
 
     /// Computes ln(1 + z).
@@ -81,7 +100,17 @@ impl<T: Float> Complex<T> {
     /// due to precision loss in the addition.
     #[inline]
     pub fn ln_1p(self) -> Self {
-        (self + T::one()).ln()
+        let ap1 = self.real + T::ONE;
+        let im = self.imaginary.atan2(ap1);
+
+        let re = if self.real.abs() < T::ONE_HALF && self.imaginary.abs() < T::ONE_HALF {
+            let u = ((T::ONE + T::ONE) * self.real).mul_add(T::ONE, self.norm_sqr());
+            T::ONE_HALF * u.ln_1p()
+        } else {
+            ap1.hypot(self.imaginary).ln()
+        };
+
+        Self::new(re, im)
     }
 
     /// Computes the base-2 logarithm.
@@ -145,11 +174,11 @@ impl<T: Float> Complex<T> {
     #[inline]
     pub fn powi(self, exp: i32) -> Self {
         if exp == 0 {
-            return Self::one();
+            return Self::ONE;
         }
         let mut base = self;
         let mut e = exp.unsigned_abs();
-        let mut result = Self::one();
+        let mut result = Self::ONE;
         while e > 0 {
             if e & 1 == 1 {
                 result *= base;

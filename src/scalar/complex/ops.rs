@@ -113,9 +113,18 @@ impl<T: Float> MulAssign<T> for Complex<T> {
 impl<T: Float> Div for Complex<T> {
     type Output = Self;
     fn div(self, rhs: Self) -> Self::Output {
-        let denom = rhs.norm_sqr();
-        let num = self * rhs.conjugate();
-        Self::new(num.real / denom, num.imaginary / denom)
+        if rhs.real.abs() >= rhs.imaginary.abs() {
+            let r = rhs.imaginary / rhs.real;
+            let den = rhs.imaginary.mul_add(r, rhs.real);
+            let re = self.imaginary.mul_add(r, self.real) / den;
+            let im = (-self).real.mul_add(r, self.imaginary) / den;
+            return Self::new(re, im);
+        }
+        let r = rhs.real / rhs.imaginary;
+        let den = rhs.real.mul_add(r, rhs.imaginary);
+        let re = self.real.mul_add(r, self.imaginary) / den;
+        let im = self.imaginary.mul_add(r, -self.real) / den;
+        Self::new(re, im)
     }
 }
 

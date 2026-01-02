@@ -25,21 +25,21 @@ mod tests {
 
     #[test]
     fn test_zero() {
-        let z = Complex::<f64>::zero();
+        let z = Complex::<f64>::ZERO;
         assert_eq!(z.real(), 0.0);
         assert_eq!(z.imaginary(), 0.0);
     }
 
     #[test]
     fn test_one() {
-        let z = Complex::<f64>::one();
+        let z = Complex::<f64>::ONE;
         assert_eq!(z.real(), 1.0);
         assert_eq!(z.imaginary(), 0.0);
     }
 
     #[test]
     fn test_i() {
-        let z = Complex::<f64>::i();
+        let z = Complex::<f64>::I;
         assert_eq!(z.real(), 0.0);
         assert_eq!(z.imaginary(), 1.0);
     }
@@ -80,19 +80,19 @@ mod tests {
     fn test_magnitude() {
         // 3-4-5 triangle
         let z = Complex::new(3.0_f64, 4.0);
-        assert!((z.magnitude() - 5.0).abs() < EPSILON);
+        assert!((z.abs() - 5.0).abs() < EPSILON);
 
         // Pure real
         let z = Complex::new(5.0_f64, 0.0);
-        assert!((z.magnitude() - 5.0).abs() < EPSILON);
+        assert!((z.abs() - 5.0).abs() < EPSILON);
 
         // Pure imaginary
         let z = Complex::new(0.0_f64, 5.0);
-        assert!((z.magnitude() - 5.0).abs() < EPSILON);
+        assert!((z.abs() - 5.0).abs() < EPSILON);
 
         // Zero
-        let z = Complex::<f64>::zero();
-        assert_eq!(z.magnitude(), 0.0);
+        let z = Complex::<f64>::ZERO;
+        assert_eq!(z.abs(), 0.0);
     }
 
     #[test]
@@ -192,7 +192,7 @@ mod tests {
 
         // z * (1/z) should equal 1
         let product = z * inv;
-        assert!(approx_eq(product, Complex::one(), EPSILON));
+        assert!(approx_eq(product, Complex::ONE, EPSILON));
     }
 
     #[test]
@@ -209,7 +209,7 @@ mod tests {
         let z = Complex::new(1.0_f64, 1.0);
 
         // z^0 = 1
-        assert!(approx_eq(z.powi(0), Complex::one(), EPSILON));
+        assert!(approx_eq(z.powi(0), Complex::ONE, EPSILON));
 
         // z^1 = z
         assert!(approx_eq(z.powi(1), z, EPSILON));
@@ -240,7 +240,7 @@ mod tests {
 
     #[test]
     fn test_powi_i_powers() {
-        let i = Complex::<f64>::i();
+        let i = Complex::<f64>::I;
 
         // i^1 = i
         assert!(approx_eq(i.powi(1), Complex::new(0.0, 1.0), EPSILON));
@@ -268,7 +268,7 @@ mod tests {
         assert!(approx_eq(root, Complex::new(0.0, 1.0), EPSILON));
 
         // sqrt(i) = (1+i)/√2
-        let z = Complex::<f64>::i();
+        let z = Complex::<f64>::I;
         let root = z.sqrt();
         let expected = Complex::new(
             1.0 / std::f64::consts::SQRT_2,
@@ -285,9 +285,9 @@ mod tests {
 
     #[test]
     fn test_sqrt_zero() {
-        let z = Complex::<f64>::zero();
+        let z = Complex::<f64>::ZERO;
         let root = z.sqrt();
-        assert!(approx_eq(root, Complex::zero(), EPSILON));
+        assert!(approx_eq(root, Complex::ZERO, EPSILON));
     }
 
     #[test]
@@ -329,9 +329,9 @@ mod tests {
     #[test]
     fn test_exp() {
         // e^0 = 1
-        let z = Complex::<f64>::zero();
+        let z = Complex::<f64>::ZERO;
         let result = z.exp();
-        assert!(approx_eq(result, Complex::one(), EPSILON));
+        assert!(approx_eq(result, Complex::ONE, EPSILON));
 
         // e^1 = e
         let z = Complex::new(1.0_f64, 0.0);
@@ -353,9 +353,9 @@ mod tests {
     #[test]
     fn test_exp2() {
         // 2^0 = 1
-        let z = Complex::<f64>::zero();
+        let z = Complex::<f64>::ZERO;
         let result = z.exp2();
-        assert!(approx_eq(result, Complex::one(), EPSILON));
+        assert!(approx_eq(result, Complex::ONE, EPSILON));
 
         // 2^1 = 2
         let z = Complex::new(1.0_f64, 0.0);
@@ -373,7 +373,7 @@ mod tests {
         // ln(1) = 0
         let z = Complex::new(1.0_f64, 0.0);
         let result = z.ln();
-        assert!(approx_eq(result, Complex::zero(), EPSILON));
+        assert!(approx_eq(result, Complex::ZERO, EPSILON));
 
         // ln(e) = 1
         let z = Complex::new(std::f64::consts::E, 0.0);
@@ -390,7 +390,7 @@ mod tests {
         ));
 
         // ln(i) = iπ/2
-        let z = Complex::<f64>::i();
+        let z = Complex::<f64>::I;
         let result = z.ln();
         assert!(approx_eq(
             result,
@@ -409,7 +409,7 @@ mod tests {
         // log2(1) = 0
         let z = Complex::new(1.0_f64, 0.0);
         let result = z.log2();
-        assert!(approx_eq(result, Complex::zero(), EPSILON));
+        assert!(approx_eq(result, Complex::ZERO, EPSILON));
 
         // log2(2) = 1
         let z = Complex::new(2.0_f64, 0.0);
@@ -427,7 +427,7 @@ mod tests {
         // log10(1) = 0
         let z = Complex::new(1.0_f64, 0.0);
         let result = z.log10();
-        assert!(approx_eq(result, Complex::zero(), EPSILON));
+        assert!(approx_eq(result, Complex::ZERO, EPSILON));
 
         // log10(10) = 1
         let z = Complex::new(10.0_f64, 0.0);
@@ -453,9 +453,9 @@ mod tests {
     #[test]
     fn test_sin() {
         // sin(0) = 0
-        let z = Complex::<f64>::zero();
+        let z = Complex::<f64>::ZERO;
         let result = z.sin();
-        assert!(approx_eq(result, Complex::zero(), EPSILON));
+        assert!(approx_eq(result, Complex::ZERO, EPSILON));
 
         // sin(π/2) = 1
         let z = Complex::new(std::f64::consts::FRAC_PI_2, 0.0);
@@ -465,20 +465,20 @@ mod tests {
         // sin(π) ≈ 0
         let z = Complex::new(std::f64::consts::PI, 0.0);
         let result = z.sin();
-        assert!(approx_eq(result, Complex::zero(), EPSILON));
+        assert!(approx_eq(result, Complex::ZERO, EPSILON));
     }
 
     #[test]
     fn test_cos() {
         // cos(0) = 1
-        let z = Complex::<f64>::zero();
+        let z = Complex::<f64>::ZERO;
         let result = z.cos();
-        assert!(approx_eq(result, Complex::one(), EPSILON));
+        assert!(approx_eq(result, Complex::ONE, EPSILON));
 
         // cos(π/2) ≈ 0
         let z = Complex::new(std::f64::consts::FRAC_PI_2, 0.0);
         let result = z.cos();
-        assert!(approx_eq(result, Complex::zero(), EPSILON));
+        assert!(approx_eq(result, Complex::ZERO, EPSILON));
 
         // cos(π) = -1
         let z = Complex::new(std::f64::consts::PI, 0.0);
@@ -489,9 +489,9 @@ mod tests {
     #[test]
     fn test_tan() {
         // tan(0) = 0
-        let z = Complex::<f64>::zero();
+        let z = Complex::<f64>::ZERO;
         let result = z.tan();
-        assert!(approx_eq(result, Complex::zero(), EPSILON));
+        assert!(approx_eq(result, Complex::ZERO, EPSILON));
 
         // tan(π/4) = 1
         let z = Complex::new(std::f64::consts::FRAC_PI_4, 0.0);
@@ -506,15 +506,15 @@ mod tests {
         let sin_z = z.sin();
         let cos_z = z.cos();
         let sum = sin_z * sin_z + cos_z * cos_z;
-        assert!(approx_eq(sum, Complex::one(), EPSILON));
+        assert!(approx_eq(sum, Complex::ONE, EPSILON));
     }
 
     #[test]
     fn test_asin() {
         // asin(0) = 0
-        let z = Complex::<f64>::zero();
+        let z = Complex::<f64>::ZERO;
         let result = z.asin();
-        assert!(approx_eq(result, Complex::zero(), EPSILON));
+        assert!(approx_eq(result, Complex::ZERO, EPSILON));
 
         // asin(1) = π/2
         let z = Complex::new(1.0_f64, 0.0);
@@ -536,7 +536,7 @@ mod tests {
         // acos(1) = 0
         let z = Complex::new(1.0_f64, 0.0);
         let result = z.acos();
-        assert!(approx_eq(result, Complex::zero(), EPSILON));
+        assert!(approx_eq(result, Complex::ZERO, EPSILON));
 
         // cos(acos(z)) = z
         let z = Complex::new(0.5_f64, 0.3);
@@ -547,9 +547,9 @@ mod tests {
     #[test]
     fn test_atan() {
         // atan(0) = 0
-        let z = Complex::<f64>::zero();
+        let z = Complex::<f64>::ZERO;
         let result = z.atan();
-        assert!(approx_eq(result, Complex::zero(), EPSILON));
+        assert!(approx_eq(result, Complex::ZERO, EPSILON));
 
         // atan(1) = π/4
         let z = Complex::new(1.0_f64, 0.0);
@@ -571,9 +571,9 @@ mod tests {
     #[test]
     fn test_sinh() {
         // sinh(0) = 0
-        let z = Complex::<f64>::zero();
+        let z = Complex::<f64>::ZERO;
         let result = z.sinh();
-        assert!(approx_eq(result, Complex::zero(), EPSILON));
+        assert!(approx_eq(result, Complex::ZERO, EPSILON));
 
         // sinh(1) for real
         let z = Complex::new(1.0_f64, 0.0);
@@ -584,9 +584,9 @@ mod tests {
     #[test]
     fn test_cosh() {
         // cosh(0) = 1
-        let z = Complex::<f64>::zero();
+        let z = Complex::<f64>::ZERO;
         let result = z.cosh();
-        assert!(approx_eq(result, Complex::one(), EPSILON));
+        assert!(approx_eq(result, Complex::ONE, EPSILON));
 
         // cosh(1) for real
         let z = Complex::new(1.0_f64, 0.0);
@@ -597,9 +597,9 @@ mod tests {
     #[test]
     fn test_tanh() {
         // tanh(0) = 0
-        let z = Complex::<f64>::zero();
+        let z = Complex::<f64>::ZERO;
         let result = z.tanh();
-        assert!(approx_eq(result, Complex::zero(), EPSILON));
+        assert!(approx_eq(result, Complex::ZERO, EPSILON));
     }
 
     #[test]
@@ -609,15 +609,15 @@ mod tests {
         let sinh_z = z.sinh();
         let cosh_z = z.cosh();
         let diff = cosh_z * cosh_z - sinh_z * sinh_z;
-        assert!(approx_eq(diff, Complex::one(), EPSILON));
+        assert!(approx_eq(diff, Complex::ONE, EPSILON));
     }
 
     #[test]
     fn test_asinh() {
         // asinh(0) = 0
-        let z = Complex::<f64>::zero();
+        let z = Complex::<f64>::ZERO;
         let result = z.asinh();
-        assert!(approx_eq(result, Complex::zero(), EPSILON));
+        assert!(approx_eq(result, Complex::ZERO, EPSILON));
 
         // sinh(asinh(z)) = z
         let z = Complex::new(0.5_f64, 0.3);
@@ -630,7 +630,7 @@ mod tests {
         // acosh(1) = 0
         let z = Complex::new(1.0_f64, 0.0);
         let result = z.acosh();
-        assert!(approx_eq(result, Complex::zero(), EPSILON));
+        assert!(approx_eq(result, Complex::ZERO, EPSILON));
 
         // cosh(acosh(z)) = z
         let z = Complex::new(2.0_f64, 0.3);
@@ -641,9 +641,9 @@ mod tests {
     #[test]
     fn test_atanh() {
         // atanh(0) = 0
-        let z = Complex::<f64>::zero();
+        let z = Complex::<f64>::ZERO;
         let result = z.atanh();
-        assert!(approx_eq(result, Complex::zero(), EPSILON));
+        assert!(approx_eq(result, Complex::ZERO, EPSILON));
 
         // tanh(atanh(z)) = z for |z| < 1
         // Use a value well within the domain for numerical stability

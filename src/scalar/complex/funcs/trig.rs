@@ -69,7 +69,7 @@ impl<T: Float> Complex<T> {
     #[inline]
     pub fn asin(self) -> Self {
         let iz = self.mul_i();
-        let root = (Self::one() - self * self).sqrt();
+        let root = (Self::ONE - self * self).sqrt();
         (iz + root).ln().mul_i_neg()
     }
 
@@ -83,7 +83,7 @@ impl<T: Float> Complex<T> {
     /// Branch cuts along the real axis for |x| > 1.
     #[inline]
     pub fn acos(self) -> Self {
-        let root = (self * self - Self::one()).sqrt();
+        let root = (self * self - Self::ONE).sqrt();
         (self + root).ln().mul_i_neg()
     }
 
@@ -98,7 +98,6 @@ impl<T: Float> Complex<T> {
     #[inline]
     pub fn atan(self) -> Self {
         let iz = self.mul_i();
-        let one = Self::one();
-        ((one - iz).ln() - (one + iz).ln()).mul_i() * T::ONE_HALF
+        ((Self::ONE - iz).ln() - (Self::ONE + iz).ln()).mul_i() * T::ONE_HALF
     }
 }

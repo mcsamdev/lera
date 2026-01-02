@@ -19,7 +19,7 @@ mod tests {
     #[test]
     fn test_div_by_zero() {
         let z = Complex::new(1.0_f64, 1.0);
-        let zero = Complex::<f64>::zero();
+        let zero = Complex::<f64>::ZERO;
         let result = z / zero;
         // Division by zero produces NaN (since 0/0 in the denominator calculation)
         // or infinity depending on the values
@@ -28,7 +28,7 @@ mod tests {
 
     #[test]
     fn test_ln_zero() {
-        let z = Complex::<f64>::zero();
+        let z = Complex::<f64>::ZERO;
         let result = z.ln();
         // ln(0) should have -∞ real part
         assert_eq!(result.real(), f64::NEG_INFINITY);
@@ -61,7 +61,7 @@ mod tests {
     #[test]
     fn test_very_small_numbers() {
         let tiny = Complex::new(1e-300_f64, 1e-300);
-        let magnitude = tiny.magnitude();
+        let magnitude = tiny.abs();
         assert!(magnitude > 0.0);
         assert!(magnitude.is_finite());
     }
@@ -69,7 +69,7 @@ mod tests {
     #[test]
     fn test_very_large_numbers() {
         let huge = Complex::new(1e300_f64, 1e300);
-        let magnitude = huge.magnitude();
+        let magnitude = huge.abs();
         assert!(magnitude.is_finite());
     }
 
@@ -78,7 +78,7 @@ mod tests {
     #[test]
     fn test_f32_basic() {
         let z = Complex::new(3.0_f32, 4.0);
-        assert!((z.magnitude() - 5.0).abs() < EPSILON_F32);
+        assert!((z.abs() - 5.0).abs() < EPSILON_F32);
     }
 
     #[test]
@@ -180,7 +180,7 @@ mod tests {
     #[test]
     fn test_default() {
         let z: Complex<f64> = Complex::default();
-        assert_eq!(z, Complex::zero());
+        assert_eq!(z, Complex::ZERO);
     }
 
     // ==================== Assignment Operator Tests ====================

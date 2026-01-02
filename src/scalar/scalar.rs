@@ -145,15 +145,15 @@ impl<T: Float> Scalar for Complex<T> {
     type Base = T;
 
     fn zero() -> Self {
-        Self::zero()
+        Self::ZERO
     }
 
     fn one() -> Self {
-        Self::one()
+        Self::ONE
     }
 
     fn abs(self) -> T {
-        Self::norm_sqr(self).sqrt()
+        self.abs()
     }
 
     fn recip(self) -> Self {

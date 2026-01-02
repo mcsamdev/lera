@@ -37,9 +37,8 @@ impl<T: Float> Complex<T> {
     pub fn tanh(self) -> Self {
         // tanh(z) = sinh(z) / cosh(z)
         // More numerically stable: tanh(a+bi) = (sinh(2a) + i*sin(2b)) / (cosh(2a) + cos(2b))
-        let two = T::one() + T::one();
-        let two_a = two * self.real;
-        let two_b = two * self.imaginary;
+        let two_a = T::TWO * self.real;
+        let two_b = T::TWO * self.imaginary;
         let denom = two_a.cosh() + two_b.cos();
         Self::new(two_a.sinh() / denom, two_b.sin() / denom)
     }
@@ -51,7 +50,7 @@ impl<T: Float> Complex<T> {
     /// `asinh(z) = ln(z + √(z² + 1))`
     #[inline]
     pub fn asinh(self) -> Self {
-        (self + (self * self + Self::one()).sqrt()).ln()
+        (self + (self * self + Self::ONE).sqrt()).ln()
     }
 
     /// Computes the complex inverse hyperbolic cosine.
@@ -61,8 +60,7 @@ impl<T: Float> Complex<T> {
     /// `acosh(z) = ln(z + √(z - 1) * √(z + 1))`
     #[inline]
     pub fn acosh(self) -> Self {
-        let one = Self::one();
-        (self + (self - one).sqrt() * (self + one).sqrt()).ln()
+        (self + (self - Self::ONE).sqrt() * (self + Self::ONE).sqrt()).ln()
     }
 
     /// Computes the complex inverse hyperbolic tangent.
@@ -75,7 +73,6 @@ impl<T: Float> Complex<T> {
     /// Undefined at `z = ±1`.
     #[inline]
     pub fn atanh(self) -> Self {
-        let one = Self::one();
-        ((one + self).ln() - (one - self).ln()) * T::ONE_HALF
+        ((Self::ONE + self).ln() - (Self::ONE - self).ln()) * T::ONE_HALF
     }
 }

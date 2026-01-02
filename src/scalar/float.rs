@@ -108,14 +108,17 @@ pub trait Float:
     // Other useful constants
     const PHI: Self; // Golden ratio φ = (1 + √5)/2
     const ONE_HALF: Self; // 1/2
+    const ONE: Self;
+    const TWO: Self;
+    const ZERO: Self;
 }
 
 impl Float for f32 {
     fn zero() -> Self {
-        0.0
+        f32::ZERO
     }
     fn one() -> Self {
-        1.0
+        f32::ONE
     }
     fn abs(self) -> Self {
         self.abs()
@@ -274,6 +277,9 @@ impl Float for f32 {
     // Other useful constants
     const PHI: Self = 1.618033988749894848204586834365638118_f32;
     const ONE_HALF: Self = 0.5_f32;
+    const ONE: Self = 1.0_f32;
+    const TWO: Self = 2.0_f32;
+    const ZERO: Self = 0.0_f32;
 }
 impl Float for f64 {
     fn zero() -> Self {
@@ -436,4 +442,7 @@ impl Float for f64 {
     // Other useful constants
     const PHI: Self = 1.618033988749894848204586834365638118_f64;
     const ONE_HALF: Self = 0.5_f64;
+    const ONE: Self = 1.0_f64;
+    const TWO: Self = 2.0_f64;
+    const ZERO: Self = 0.0_f64;
 }

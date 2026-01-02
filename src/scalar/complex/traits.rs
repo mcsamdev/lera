@@ -4,19 +4,19 @@ use std::iter::{Product, Sum};
 
 impl<T: Float> Sum for Complex<T> {
     fn sum<I: Iterator<Item = Self>>(iter: I) -> Self {
-        iter.fold(Self::zero(), |acc, x| acc + x)
+        iter.fold(Self::ZERO, |acc, x| acc + x)
     }
 }
 
 impl<T: Float> Product for Complex<T> {
     fn product<I: Iterator<Item = Self>>(iter: I) -> Self {
-        iter.fold(Self::one(), |acc, x| acc * x)
+        iter.fold(Self::ONE, |acc, x| acc * x)
     }
 }
 
 impl<T: Float> Default for Complex<T> {
     fn default() -> Self {
-        Self::zero()
+        Self::ZERO
     }
 }
 

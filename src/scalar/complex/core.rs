@@ -16,7 +16,7 @@ use crate::scalar::Float;
 /// use lera::scalar::{Complex, Float};
 ///
 /// let z = Complex::new(3.0_f64, 4.0);
-/// assert_eq!(z.magnitude(), 5.0);
+/// assert_eq!(z.abs(), 5.0);
 /// assert_eq!(z.conjugate(), Complex::new(3.0, -4.0));
 /// ```
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -41,26 +41,8 @@ impl<T: Float> Complex<T> {
     /// assert_eq!(z.imaginary(), 2.0);
     /// ```
     #[inline]
-    pub fn new(real: T, imaginary: T) -> Self {
+    pub const fn new(real: T, imaginary: T) -> Self {
         Self { real, imaginary }
-    }
-
-    /// Returns the additive identity (0 + 0i).
-    #[inline]
-    pub fn zero() -> Self {
-        Self::new(T::zero(), T::zero())
-    }
-
-    /// Returns the multiplicative identity (1 + 0i).
-    #[inline]
-    pub fn one() -> Self {
-        Self::new(T::one(), T::zero())
-    }
-
-    /// Returns the imaginary unit (0 + 1i).
-    #[inline]
-    pub fn i() -> Self {
-        Self::new(T::zero(), T::one())
     }
 
     /// Returns the complex conjugate (a - bi for a + bi).
@@ -104,23 +86,23 @@ impl<T: Float> Complex<T> {
         Self::new(self.imaginary, -self.real)
     }
 
-    /// Returns the magnitude (absolute value) of the complex number.
+    /// Returns the abs (absolute value) of the complex number.
     ///
     /// Computes `√(real² + imaginary²)` using the standard Euclidean norm.
     ///
     /// # Note
     /// For better numerical stability with extreme values, consider using
-    /// [`norm_sqr`](Self::norm_sqr) when you only need the squared magnitude.
+    /// [`norm_sqr`](Self::norm_sqr) when you only need the squared abs.
     ///
     /// # Examples
     /// ```
     /// use lera::scalar::Complex;
     ///
     /// let z = Complex::new(3.0_f64, 4.0);
-    /// assert_eq!(z.magnitude(), 5.0);
+    /// assert_eq!(z.abs(), 5.0);
     /// ```
     #[inline]
-    pub fn magnitude(self) -> T {
+    pub fn abs(self) -> T {
         self.real.hypot(self.imaginary)
     }
 
@@ -199,23 +181,32 @@ impl<T: Float> Complex<T> {
         self.imaginary.atan2(self.real)
     }
 
-    /// Returns the squared magnitude (squared norm).
+    /// Returns the squared abs (squared norm).
     ///
     /// Computes `real² + imaginary²` without taking the square root.
     ///
     /// # Use Cases
-    /// - More efficient than `magnitude()` when you only need comparisons
+    /// - More efficient than `abs()` when you only need comparisons
     /// - Avoids potential overflow/underflow from the square root
     /// - Useful for computing `|z|²` directly
     #[inline]
     pub fn norm_sqr(self) -> T {
-        self.real * self.real + self.imaginary * self.imaginary
+        let ar = self.real.abs();
+        let ai = self.imaginary.abs();
+        let m = if ar >= ai { ar } else { ai };
+        if m == T::zero() {
+            T::zero()
+        } else {
+            let r = self.real / m;
+            let i = self.imaginary / m;
+            (r.mul_add(r, i * i)) * (m * m)
+        }
     }
 
     /// Creates a complex number from polar coordinates.
     ///
     /// # Arguments
-    /// - `r`: The magnitude (radius).
+    /// - `r`: The abs (radius).
     /// - `theta`: The argument (angle) in radians.
     ///
     /// # Formula
@@ -238,33 +229,33 @@ impl<T: Float> Complex<T> {
 
     /// Converts the complex number's argument from radians to degrees.
     ///
-    /// Preserves magnitude, converts the phase angle to degrees.
+    /// Preserves abs, converts the phase angle to degrees.
     #[inline]
     pub fn to_degrees(self) -> Self {
-        let r = self.magnitude();
+        let r = self.abs();
         let theta = self.arg().to_degrees();
         Self::from_polar(r, theta.to_radians())
     }
 
     /// Converts the complex number's argument from degrees to radians.
     ///
-    /// Preserves magnitude, converts the phase angle to radians.
+    /// Preserves abs, converts the phase angle to radians.
     #[inline]
     pub fn to_radians(self) -> Self {
-        let r = self.magnitude();
+        let r = self.abs();
         let theta = self.arg().to_radians();
         Self::from_polar(r, theta)
     }
 
     /// Returns the real part of the complex number.
     #[inline]
-    pub fn real(self) -> T {
+    pub const fn real(self) -> T {
         self.real
     }
 
     /// Returns the imaginary part of the complex number.
     #[inline]
-    pub fn imaginary(self) -> T {
+    pub const fn imaginary(self) -> T {
         self.imaginary
     }
 
@@ -287,4 +278,12 @@ impl<T: Float> Complex<T> {
     pub fn is_finite(self) -> bool {
         self.real.is_finite() && self.imaginary.is_finite()
     }
+    /// Returns the additive identity (0 + 0i).
+    pub const ZERO: Self = Self::new(T::ZERO, T::ZERO);
+    /// Returns the multiplicative identity (1 + 0i).
+    pub const ONE: Self = Self::new(T::ONE, T::ZERO);
+    /// Returns the constant 2 + 0i.
+    pub const TWO: Self = Self::new(T::TWO, T::ZERO);
+    /// Returns the imaginary unit (0 + 1i).
+    pub const I: Self = Self::new(T::ZERO, T::ONE);
 }

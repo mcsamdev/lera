@@ -1,4 +1,4 @@
-mod scalar;
+pub mod scalar;
 pub use scalar::*;
 
 pub fn add(left: u64, right: u64) -> u64 {
